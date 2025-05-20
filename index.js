@@ -34,6 +34,19 @@ app.get('/v/:id', async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/upload", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/terms-condition", (req, res) => {
+  res.sendFile(path.join(__dirname, "terms.html"));
+});
+
+
 app.listen(PORT, () => {
   console.log(`Web Server listening at http://localhost:${PORT}`);
 });
