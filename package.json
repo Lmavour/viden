@@ -1,17 +1,16 @@
 {
-  "name": "pomf-uploader",
+  "name": "web-server-video",
   "version": "1.0.0",
-  "description": "Upload video to Pomf from a Node.js server",
-  "main": "index.js",
+  "description": "Web server yang menampilkan player.html dan mengambil data dari API berdasarkan ID video",
+  "main": "index_web.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index_web.js"
   },
   "dependencies": {
-    "axios": "^1.6.0",
-    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "form-data": "^4.0.0",
-    "mime-types": "^2.1.35",
-    "multer": "^1.4.5-lts.1"
-  }
+    "node-fetch": "^2.6.9"
+  },
+  "keywords": [],
+  "author": "Ara",
+  "license": "MIT"
 }
