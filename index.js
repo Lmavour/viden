@@ -13,7 +13,7 @@ app.get('/v/:id', async (req, res) => {
 
   try {
     // Ambil data video dari server API
-    const apiRes = await fetch(`http://fi5.bot-hosting.net:22117/info/${id}`);
+    const apiRes = await fetch(`https://backend-videc.vercel.app/info/${id}`);
     if (!apiRes.ok) return res.status(404).send('Video tidak ditemukan');
 
     const video = await apiRes.json();
