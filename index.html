@@ -1,0 +1,210 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload Video - Modern UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+    input[type="file"]::-webkit-file-upload-button {
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    input[type="file"]::-webkit-file-upload-button:hover {
+      background-color: #4f46e5;
+      color: white;
+    }
+    /* Spinner animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+  <header class="sticky top-0 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-6 py-3 shadow-md">
+    <a href="#" class="text-indigo-600 text-3xl font-extrabold tracking-tight select-none hover:text-indigo-700 transition duration-300">
+      VIDEC
+    </a>
+    <nav class="flex items-center space-x-6">
+      <button aria-label="Upload video" class="text-indigo-600 hover:text-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-600 rounded transition text-xl">
+        <a href="/upload"><i class="fas fa-upload"></i></a>
+      </button>
+      <button aria-label="Terms and Conditions" class="text-indigo-600 hover:text-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-600 rounded transition text-xl">
+       <a href="/terms-condition"><i class="fas fa-file-contract"></i></a> 
+      </button>
+    </nav>
+  </header>
+
+  <main class="flex-grow w-full max-w-4xl mx-auto px-6 py-12">
+    <section class="bg-white rounded-xl shadow-xl p-10 sm:p-12 border border-indigo-100">
+      <h1 class="text-4xl font-extrabold text-indigo-600 mb-8 text-center tracking-wide drop-shadow-md select-none">
+        Upload Your Video
+      </h1>
+      <form id="uploadForm" class="flex flex-col space-y-8" enctype="multipart/form-data" novalidate>
+        <div>
+          <label for="video-upload" class="block text-gray-800 font-semibold mb-3 text-lg">Select Video File</label>
+          <input id="video-upload" name="video" type="file" accept="video/*" required
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-pointer" />
+        </div>
+        <div>
+          <label for="title" class="block text-gray-800 font-semibold mb-3 text-lg">Video Title</label>
+          <input id="title" name="title" type="text" required placeholder="Enter your video title"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300" />
+        </div>
+        <div>
+          <label for="upload-date" class="block text-gray-800 font-semibold mb-3 text-lg">Upload Date</label>
+          <input id="upload-date" name="date" type="text" readonly
+            class="w-full border border-gray-300 bg-gray-100 text-gray-500 rounded-lg px-4 py-3 text-base cursor-not-allowed" />
+        </div>
+
+        <button type="submit" id="uploadBtn" class="relative bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 rounded-lg text-lg transition duration-300 overflow-hidden focus:outline-none focus:ring-4 focus:ring-indigo-400">
+          <span class="relative z-10">Upload Video</span>
+          <svg id="btnSpinner" class="absolute top-1/2 left-1/2 w-6 h-6 text-white -translate-x-1/2 -translate-y-1/2 hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+        </button>
+      </form>
+
+      <div id="progressContainer" class="mt-8 hidden">
+        <p class="text-indigo-700 font-semibold mb-2 text-center">Uploading...</p>
+        <div class="w-full bg-indigo-100 rounded-full h-4 overflow-hidden shadow-inner">
+          <div id="progressBar" class="bg-indigo-600 h-4 rounded-full w-0 transition-all duration-300 ease-in-out"></div>
+        </div>
+      </div>
+
+      <div id="copyBox" class="mt-8 hidden bg-green-50 border border-green-300 rounded-lg p-5 flex flex-col items-center space-y-4 shadow-md">
+        <p class="text-green-700 font-semibold text-lg select-text text-center">Upload berhasil! Klik tombol di bawah untuk salin dan buka URL:</p>
+        <button id="copyBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold text-lg flex items-center space-x-3 transition duration-300 focus:outline-none focus:ring-4 focus:ring-green-400">
+          <i class="fas fa-copy"></i>
+          <span>Salin & Pergi ke Link</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
+      <div class="bg-white shadow-lg p-8 rounded-xl border border-indigo-100 hover:shadow-indigo-300 transition-shadow duration-300 cursor-default">
+        <i class="fas fa-bolt text-indigo-600 text-6xl drop-shadow-md"></i>
+        <h3 class="text-2xl font-semibold mt-6 text-indigo-700">Fast</h3>
+        <p class="text-gray-600 text-base mt-2 max-w-xs mx-auto">Upload cepat dengan server cepat dan stabil, tanpa hambatan.</p>
+      </div>
+      <div class="bg-white shadow-lg p-8 rounded-xl border border-indigo-100 hover:shadow-indigo-300 transition-shadow duration-300 cursor-default">
+        <i class="fas fa-lock text-indigo-600 text-6xl drop-shadow-md"></i>
+        <h3 class="text-2xl font-semibold mt-6 text-indigo-700">Secure</h3>
+        <p class="text-gray-600 text-base mt-2 max-w-xs mx-auto">Data Anda aman dengan enkripsi tingkat tinggi dan proteksi maksimal.</p>
+      </div>
+      <div class="bg-white shadow-lg p-8 rounded-xl border border-indigo-100 hover:shadow-indigo-300 transition-shadow duration-300 cursor-default">
+        <i class="fas fa-infinity text-indigo-600 text-6xl drop-shadow-md"></i>
+        <h3 class="text-2xl font-semibold mt-6 text-indigo-700">Unlimited</h3>
+        <p class="text-gray-600 text-base mt-2 max-w-xs mx-auto">Upload sebanyak mungkin video tanpa batasan kuota atau durasi.</p>
+      </div>
+      <div class="bg-white shadow-lg p-8 rounded-xl border border-indigo-100 hover:shadow-indigo-300 transition-shadow duration-300 cursor-default">
+        <i class="fas fa-server text-indigo-600 text-6xl drop-shadow-md"></i>
+        <h3 class="text-2xl font-semibold mt-6 text-indigo-700">Good Server</h3>
+        <p class="text-gray-600 text-base mt-2 max-w-xs mx-auto">Server stabil dan andal dengan uptime tinggi dan performa optimal.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const uploadDateInput = document.getElementById("upload-date");
+    const form = document.getElementById("uploadForm");
+    const copyBox = document.getElementById("copyBox");
+    const copyBtn = document.getElementById("copyBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const btnSpinner = document.getElementById("btnSpinner");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+
+    // Set tanggal otomatis
+    const now = new Date();
+    uploadDateInput.value = now.toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" });
+
+    function resetFormState() {
+      uploadBtn.disabled = false;
+      btnSpinner.classList.add("hidden");
+      progressContainer.classList.add("hidden");
+      progressBar.style.width = "0%";
+      uploadBtn.querySelector("span").classList.remove("invisible");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("video-upload");
+      const file = fileInput.files[0];
+      const title = document.getElementById("title").value.trim();
+      const date = uploadDateInput.value;
+
+      if (!file || !title || !date) {
+        alert("Lengkapi semua data!");
+        return;
+      }
+
+      // Disable button and show spinner
+      uploadBtn.disabled = true;
+      btnSpinner.classList.remove("hidden");
+      uploadBtn.querySelector("span").classList.add("invisible");
+      copyBox.classList.add("hidden");
+      progressContainer.classList.remove("hidden");
+      progressBar.style.width = "0%";
+
+      const formData = new FormData();
+      formData.append("video", file);
+      formData.append("title", title);
+      formData.append("date", date);
+
+      try {
+        // Use XMLHttpRequest to track upload progress
+        await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://fi3.bot-hosting.net:22463/upload");
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const percentComplete = (event.loaded / event.total) * 100;
+              progressBar.style.width = percentComplete + "%";
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                if (data.urlvidec) {
+                  copyBox.classList.remove("hidden");
+                  copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(data.urlvidec).then(() => {
+                      window.location.href = data.urlvidec;
+                    });
+                  };
+                  resolve();
+                } else {
+                  reject(new Error(data.error || "Unknown error"));
+                }
+              } catch {
+                reject(new Error("Invalid server response"));
+              }
+            } else {
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error("Network error during upload"));
+          xhr.send(formData);
+        });
+      } catch (err) {
+        alert("Gagal mengirim: " + err.message);
+      } finally {
+        resetFormState();
+      }
+    });
+  </script>
+</body>
+</html>
